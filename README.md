@@ -1,6 +1,6 @@
 # SQLUtils
 
-Simple SSMS extensions that alows you to format and convert to and from Delphi string.
+Simple SSMS extensions that allows you to format and convert to and from Delphi string.
 
 ![Screenshot](menu.png)
 
