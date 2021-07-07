@@ -90,9 +90,9 @@ namespace SQLUtils
             {
                 var newText = text;
                 newText = Regex.Replace(newText, "EmptyStr", "");
-                newText = Regex.Replace(newText, "^\\w+ *:= *'?", "", RegexOptions.Multiline);
+                newText = Regex.Replace(newText, "^ *\\w+ *(?::|\\+)= *(?:'|\")?", "", RegexOptions.Multiline);
                 newText = Regex.Replace(newText, "^ *\\+? *'", "", RegexOptions.Multiline);
-                newText = Regex.Replace(newText, "';?(\r|\n|$)", "$1", RegexOptions.Multiline);
+                newText = Regex.Replace(newText, "(?:'|\");?(\r|\n|$)", "$1", RegexOptions.Multiline);
                 newText = Regex.Replace(newText, "''", "'");
                 return newText;
             });
