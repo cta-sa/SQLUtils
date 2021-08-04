@@ -1292,6 +1292,13 @@ namespace SQL_Formatter
             Writter.Join(node.OrderByElements, visitor: this);
         }
 
+        public override void ExplicitVisit(HavingClause node)
+        {
+            Writter.Keyword("HAVING");
+            Writter.Space();
+            Writter.IndentToCursor(() => node.SearchCondition.Accept(this));
+        }
+
         override public void ExplicitVisit(QueryExpression node)
         {
             if (node.OrderByClause != null)
