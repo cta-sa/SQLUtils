@@ -19,6 +19,15 @@ namespace SQL_Formatter
             throw new Exception(node.ToString() + '\n' + substring);
         }
 
+        override public void ExplicitVisit(RightFunctionCall node)
+        {
+            Writter.Keyword("RIGHT");
+            Writter.Text("(");
+            Writter.Join(node.Parameters, visitor: this);
+            Writter.Text(")");
+            ExplicitVisit((PrimaryExpression)node);
+        }
+
         override public void ExplicitVisit(OverClause node)
         {
             Writter.Keyword("OVER");
@@ -44,6 +53,21 @@ namespace SQL_Formatter
             });
             //public WindowFrameClause WindowFrameClause { get; set; }
             Writter.Text(")");
+        }
+
+        public override void ExplicitVisit(NullIfExpression node)
+        {
+            Writter.Keyword("NULLIF");
+            Writter.Text("(");
+            Writter.IndentToCursor(() =>
+            {
+                node.FirstExpression.Accept(this);
+                Writter.Text(",");
+                Writter.Space();
+                node.SecondExpression.Accept(this);
+            });
+            Writter.Text(")");
+            ExplicitVisit((PrimaryExpression)node);
         }
 
         override public void ExplicitVisit(AssignmentSetClause node)
