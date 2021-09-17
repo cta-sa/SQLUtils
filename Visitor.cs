@@ -177,6 +177,27 @@ namespace SQL_Formatter
             node.DeleteSpecification.Accept(this);
         }
 
+        override public void ExplicitVisit(UnpivotedTableReference node)
+        {
+            node.TableReference.Accept(this);
+            Writter.NewLine();
+            Writter.Keyword("UNPIVOT");
+            Writter.Space();
+            Writter.Text("(");
+            node.ValueColumn.Accept(this);
+            Writter.Space();
+            Writter.Keyword("FOR");
+            Writter.Space();
+            node.PivotColumn.Accept(this);
+            Writter.Space();
+            Writter.Keyword("IN");
+            Writter.Text("(");
+            Writter.Join(node.InColumns, visitor: this);
+            Writter.Text(")");
+            Writter.Text(")");
+            ExplicitVisit((TableReferenceWithAlias)node);
+        }
+
         override public void ExplicitVisit(PivotedTableReference node)
         {
             node.TableReference.Accept(this);
