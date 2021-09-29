@@ -177,6 +177,14 @@ namespace SQL_Formatter
             node.DeleteSpecification.Accept(this);
         }
 
+        override public void ExplicitVisit(QueryParenthesisExpression node)
+        {
+            Writter.Text("(");
+            Writter.IndentToCursor(() => node.QueryExpression.Accept(this));
+            Writter.Text(")");
+            ExplicitVisit((QueryExpression)node);
+        }
+
         override public void ExplicitVisit(UnpivotedTableReference node)
         {
             node.TableReference.Accept(this);
