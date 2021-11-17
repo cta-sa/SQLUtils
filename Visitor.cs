@@ -15,9 +15,117 @@ namespace SQL_Formatter
 
         override public void Visit(TSqlFragment node)
         {
-            var substring = String.Join("", node.ScriptTokenStream.Skip(node.FirstTokenIndex).Take(node.LastTokenIndex - node.FirstTokenIndex + 1).Select(token => token.Text));
+            var substring = string.Join("", node.ScriptTokenStream.Skip(node.FirstTokenIndex).Take(node.LastTokenIndex - node.FirstTokenIndex + 1).Select(token => token.Text));
             throw new Exception(node.ToString() + '\n' + substring);
         }
+
+        override public void ExplicitVisit(GlobalFunctionTableReference node)
+        {
+            node.Name.Accept(this);
+            Writter.Text("(");
+            Writter.Join(node.Parameters, visitor: this);
+            Writter.Text(")");
+            ExplicitVisit((TableReferenceWithAlias)node);
+        }
+
+        /*
+        override public void ExplicitVisit(ExecutableStringList node)
+        {
+            Writter.Join(node.Strings, visitor: this);
+            if (node.Parameters.Count > 0)
+            {
+                Writter.Space();
+                Writter.Join(node.Parameters, visitor: this);
+            }
+        }
+
+        override public void ExplicitVisit(ProcedureReferenceName node)
+        {
+            node.ProcedureReference.Accept(this);
+            Writter.Space();
+            Writter.Join(node.Parameters, visitor: this);
+            //public AdHocDataSource AdHocDataSource { get; set; }
+        }
+
+        override public void ExplicitVisit(ExecutableProcedureReference node)
+        {
+            node.ProcedureReference.Accept(this);
+            Writter.Space();
+            Writter.Join(node.Parameters, visitor: this);
+            //public AdHocDataSource AdHocDataSource { get; set; }
+        }
+
+        override public void ExplicitVisit(ExecuteSpecification node)
+        {
+            Writter.Keyword("EXEC");
+            Writter.Space();
+            if (node.Variable != null)
+            {
+                node.Variable.Accept(this);
+                Writter.Space();
+                Writter.Text("=");
+                Writter.Space();
+            }
+            node.ExecutableEntity.Accept(this);
+            if (node.ExecuteContext != null)
+            {
+                Writter.Space(canBreak: true);
+                Writter.Keyword("AS");
+                Writter.Space();
+                node.LinkedServer.Accept(this);
+            }
+            if (node.LinkedServer != null)
+            {
+                Writter.Space(canBreak: true);
+                Writter.Keyword("AT");
+                Writter.Space();
+                node.LinkedServer.Accept(this);
+            }
+        }
+
+        override public void ExplicitVisit(ResultSetsExecuteOption node)
+        {
+            ExplicitVisit((ExecuteOption)node);
+            Writter.Space();
+            switch (node.ResultSetsOptionKind)
+            {
+                case ResultSetsOptionKind.Undefined:
+                    Writter.Keyword("UNDEFINED");
+                    break;
+                case ResultSetsOptionKind.None:
+                    Writter.Keyword("NONE");
+                    break;
+                case ResultSetsOptionKind.ResultSetsDefined:
+                    Writter.Join(node.Definitions, visitor: this);
+                    break;
+            }
+        }
+
+        override public void ExplicitVisit(ExecuteOption node)
+        {
+            switch (node.OptionKind)
+            {
+                case ExecuteOptionKind.Recompile:
+                    Writter.Keyword("RECOMPILE");
+                    break;
+                case ExecuteOptionKind.ResultSets:
+                    Writter.Keyword("RESULT SETS");
+                    break;
+            }
+        }
+
+        override public void ExplicitVisit(ExecuteStatement node)
+        {
+            node.ExecuteSpecification.Accept(this);
+            if (node.Options.Count > 0)
+            {
+                Writter.Space(canBreak: true);
+                Writter.Keyword("WITH");
+                Writter.Space();
+                Writter.Join(node.Options, visitor: this);
+            }
+        }
+        */
 
         override public void ExplicitVisit(RightFunctionCall node)
         {
